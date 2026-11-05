@@ -184,10 +184,27 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer">
+            <footer className="footer">
         <p>
           Made by <strong>Ishaan Kaushik</strong>
         </p>
+        <div className="contact">
+          <a
+            href="https://www.linkedin.com/in/ishan-kaushik-4a1b25407/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn
+          </a>
+          <a href="tel:+918595141164">+91 85951 41164</a>
+          <a
+            href="https://wa.me/918595141164"
+            target="_blank"
+            rel="noreferrer"
+          >
+            WhatsApp
+          </a>
+        </div>
         <p className="muted small">
           Your input is sent to an AI service to generate the answer. AI can make
           mistakes, so test the fix before using it.
