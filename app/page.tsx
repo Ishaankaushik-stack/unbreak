@@ -2,6 +2,25 @@
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 
+const EXAMPLES = [
+  {
+    label: "Missing module",
+    error: "Error: Cannot find module 'express'\n    at Function.Module._resolveFilename",
+    code: "",
+  },
+  {
+    label: "Docker build error",
+    error:
+      "npm ERR! engine Unsupported engine\nnpm ERR! notsup Required: {\"node\":\">=20\"}\nnpm ERR! notsup Actual: {\"node\":\"16.20.0\"}",
+    code: "FROM node:16\nWORKDIR /app\nCOPY . .\nRUN npm install\nCMD [\"npm\", \"start\"]",
+  },
+  {
+    label: "JavaScript bug",
+    error: "TypeError: Cannot read properties of undefined (reading 'map')",
+    code: "function List({ items }) {\n  return items.map((i) => <li>{i}</li>);\n}",
+  },
+];
+
 function CodeBlock({ children }: { children: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
   const preRef = useRef<HTMLPreElement>(null);
@@ -13,33 +32,11 @@ function CodeBlock({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div style={{ position: "relative", margin: "12px 0" }}>
-      <button
-        onClick={copy}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          padding: "4px 10px",
-          fontSize: 12,
-          borderRadius: 6,
-          cursor: "pointer",
-        }}
-      >
+    <div className="code-wrap">
+      <button className="copy-btn" onClick={copy}>
         {copied ? "Copied" : "Copy"}
       </button>
-      <pre
-        ref={preRef}
-        style={{
-          background: "#1e1e1e",
-          color: "#eee",
-          padding: 12,
-          borderRadius: 8,
-          overflowX: "auto",
-        }}
-      >
-        {children}
-      </pre>
+      <pre ref={preRef}>{children}</pre>
     </div>
   );
 }
@@ -73,57 +70,129 @@ export default function Home() {
     setLoading(false);
   }
 
-  const box = {
-    width: "100%",
-    marginBottom: 12,
-    padding: 10,
-    fontFamily: "monospace",
-    fontSize: 13,
-    borderRadius: 8,
-    border: "1px solid #888",
-  } as const;
-
   return (
-    <main style={{ maxWidth: 800, margin: "40px auto", padding: 16 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 600 }}>Unbreak</h1>
-      <p style={{ marginBottom: 8 }}>
-        Paste your broken code or error log. Get it fixed.
-      </p>
-      <p style={{ marginBottom: 16, fontSize: 13, opacity: 0.7 }}>
-        Do not paste passwords or API keys.
-      </p>
-
-      <textarea
-        placeholder="Paste the error log or your question here..."
-        value={error}
-        onChange={(e) => setError(e.target.value)}
-        rows={8}
-        style={box}
-      />
-      <textarea
-        placeholder="Paste your code / Dockerfile / config (optional)..."
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        rows={8}
-        style={box}
-      />
-      <button
-        onClick={diagnose}
-        disabled={loading || !error.trim()}
-        style={{ padding: "10px 20px", borderRadius: 8, cursor: "pointer" }}
-      >
-        {loading ? "Fixing..." : "Unbreak it"}
-      </button>
-
-      <div className="answer" style={{ marginTop: 24, lineHeight: 1.6 }}>
-        <ReactMarkdown
-          components={{
-            pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
-          }}
+    <div className="page">
+      <header className="nav">
+        <div className="logo">
+          <span className="logo-mark">U</span>
+          <span className="logo-text">Unbreak</span>
+        </div>
+        <a
+          className="nav-link"
+          href="https://github.com/Ishaankaushik-stack"
+          target="_blank"
+          rel="noreferrer"
         >
-          {result}
-        </ReactMarkdown>
-      </div>
-    </main>
+          GitHub
+        </a>
+      </header>
+
+      <main className="container">
+        <section className="hero">
+          <span className="badge">AI debugging assistant</span>
+          <h1>
+            Paste the error. <span className="gradient">Get the fix.</span>
+          </h1>
+          <p className="subtitle">
+            Drop in a broken error log or code. Unbreak explains the root cause
+            and gives you the complete corrected code.
+          </p>
+        </section>
+
+        <section className="card">
+          <div className="examples">
+            <span className="examples-label">Try an example:</span>
+            {EXAMPLES.map((ex) => (
+              <button
+                key={ex.label}
+                className="chip"
+                onClick={() => {
+                  setError(ex.error);
+                  setCode(ex.code);
+                }}
+              >
+                {ex.label}
+              </button>
+            ))}
+          </div>
+
+          <label className="field-label" htmlFor="error">
+            Error log or question
+          </label>
+          <textarea
+            id="error"
+            className="input"
+            placeholder="Paste the error log or your question here..."
+            value={error}
+            onChange={(e) => setError(e.target.value)}
+            rows={7}
+          />
+
+          <label className="field-label" htmlFor="code">
+            Code, Dockerfile or config <span className="optional">(optional)</span>
+          </label>
+          <textarea
+            id="code"
+            className="input"
+            placeholder="Paste your code here..."
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            rows={7}
+          />
+
+          <div className="actions">
+            <button
+              className="primary"
+              onClick={diagnose}
+              disabled={loading || !error.trim()}
+            >
+              {loading ? "Fixing..." : "Unbreak it"}
+            </button>
+            <span className="warning">Do not paste passwords or API keys.</span>
+          </div>
+        </section>
+
+        {(result || loading) && (
+          <section className="card result">
+            <h2 className="result-title">Result</h2>
+            {loading && !result && <p className="muted">Analyzing your code...</p>}
+            <div className="answer">
+              <ReactMarkdown
+                components={{
+                  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+                }}
+              >
+                {result}
+              </ReactMarkdown>
+            </div>
+          </section>
+        )}
+
+        <section className="features">
+          <div className="feature">
+            <h3>Root cause</h3>
+            <p>Plain-English explanation of why it broke.</p>
+          </div>
+          <div className="feature">
+            <h3>Full fixed code</h3>
+            <p>The complete corrected file, not just a snippet.</p>
+          </div>
+          <div className="feature">
+            <h3>What changed</h3>
+            <p>A short list of every change and the reason.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <p>
+          Made by <strong>Ishaan Kaushik</strong>
+        </p>
+        <p className="muted small">
+          Your input is sent to an AI service to generate the answer. AI can make
+          mistakes, so test the fix before using it.
+        </p>
+      </footer>
+    </div>
   );
 }
