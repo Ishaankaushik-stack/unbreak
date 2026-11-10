@@ -4,15 +4,19 @@ import ReactMarkdown from "react-markdown";
 
 const EXAMPLES = [
   {
-    label: "Missing module",
-    error: "Error: Cannot find module 'express'\n    at Function.Module._resolveFilename",
+    label: "Explain simply",
+    error: "Explain how the stock market works in simple words.",
     code: "",
   },
   {
-    label: "Docker build error",
-    error:
-      "npm ERR! engine Unsupported engine\nnpm ERR! notsup Required: {\"node\":\">=20\"}\nnpm ERR! notsup Actual: {\"node\":\"16.20.0\"}",
-    code: "FROM node:16\nWORKDIR /app\nCOPY . .\nRUN npm install\nCMD [\"npm\", \"start\"]",
+    label: "Write an email",
+    error: "Write a short, polite leave application email to my manager for 2 days.",
+    code: "",
+  },
+  {
+    label: "Missing module",
+    error: "Error: Cannot find module 'express'\n    at Function.Module._resolveFilename",
+    code: "",
   },
   {
     label: "JavaScript bug",
@@ -77,25 +81,36 @@ export default function Home() {
           <span className="logo-mark">U</span>
           <span className="logo-text">Unbreak</span>
         </div>
-        <a
-          className="nav-link"
-          href="https://github.com/Ishaankaushik-stack"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub
-        </a>
+        <div style={{ display: "flex", gap: 16 }}>
+          <a
+            className="nav-link"
+            href="https://github.com/Ishaankaushik-stack"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+          <a
+            className="nav-link"
+            href="https://www.linkedin.com/in/ishan-kaushik-4a1b25407/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn
+          </a>
+        </div>
       </header>
 
       <main className="container">
         <section className="hero">
-          <span className="badge">AI debugging assistant</span>
+          <span className="badge">AI assistant</span>
           <h1>
-            Paste the error. <span className="gradient">Get the fix.</span>
+            Ask anything. <span className="gradient">Get answers.</span>
           </h1>
           <p className="subtitle">
-            Drop in a broken error log or code. Unbreak explains the root cause
-            and gives you the complete corrected code.
+            Ask any question on any topic, or paste broken code. Unbreak gives
+            you a clear answer, and the complete fixed code when you paste an
+            error.
           </p>
         </section>
 
@@ -117,24 +132,24 @@ export default function Home() {
           </div>
 
           <label className="field-label" htmlFor="error">
-            Error log or question
+            Your question, error or log
           </label>
           <textarea
             id="error"
             className="input"
-            placeholder="Paste the error log or your question here..."
+            placeholder="Ask a question or paste an error here..."
             value={error}
             onChange={(e) => setError(e.target.value)}
             rows={7}
           />
 
           <label className="field-label" htmlFor="code">
-            Code, Dockerfile or config <span className="optional">(optional)</span>
+            Code or extra details <span className="optional">(optional)</span>
           </label>
           <textarea
             id="code"
             className="input"
-            placeholder="Paste your code here..."
+            placeholder="Paste your code or any extra details here..."
             value={code}
             onChange={(e) => setCode(e.target.value)}
             rows={7}
@@ -146,7 +161,7 @@ export default function Home() {
               onClick={diagnose}
               disabled={loading || !error.trim()}
             >
-              {loading ? "Fixing..." : "Unbreak it"}
+              {loading ? "Thinking..." : "Ask Unbreak"}
             </button>
             <span className="warning">Do not paste passwords or API keys.</span>
           </div>
@@ -155,7 +170,9 @@ export default function Home() {
         {(result || loading) && (
           <section className="card result">
             <h2 className="result-title">Result</h2>
-            {loading && !result && <p className="muted">Analyzing your code...</p>}
+            {loading && !result && (
+              <p className="muted">Working on your answer...</p>
+            )}
             <div className="answer">
               <ReactMarkdown
                 components={{
@@ -170,21 +187,21 @@ export default function Home() {
 
         <section className="features">
           <div className="feature">
-            <h3>Root cause</h3>
-            <p>Plain-English explanation of why it broke.</p>
+            <h3>Any topic</h3>
+            <p>Study, work, writing, health, money and everyday questions.</p>
           </div>
           <div className="feature">
-            <h3>Full fixed code</h3>
-            <p>The complete corrected file, not just a snippet.</p>
+            <h3>Fixes your code</h3>
+            <p>Paste an error and get the root cause and the complete fix.</p>
           </div>
           <div className="feature">
-            <h3>What changed</h3>
-            <p>A short list of every change and the reason.</p>
+            <h3>Clear answers</h3>
+            <p>Short, simple explanations with steps and examples.</p>
           </div>
         </section>
       </main>
 
-            <footer className="footer">
+      <footer className="footer">
         <p>
           Made by <strong>Ishaan Kaushik</strong>
         </p>
@@ -207,7 +224,7 @@ export default function Home() {
         </div>
         <p className="muted small">
           Your input is sent to an AI service to generate the answer. AI can make
-          mistakes, so test the fix before using it.
+          mistakes, so test the fix or check important answers before using them.
         </p>
       </footer>
     </div>
